@@ -8,7 +8,7 @@ $daysToKeep = 14
 Function Backup-SQLDatabase
 
 {
-    $timestamp = Get-Date -Format "yyyyMMddHHmmss"
+    $timestamp = Get-Date -Format "yyyy-MM-dd-HH-mm-ss"
     $backupFileName = "$databaseName" + "_" + "$timestamp" + ".bak"
     $backupFilePath = Join-Path $backupFolder $backupFileName
 
