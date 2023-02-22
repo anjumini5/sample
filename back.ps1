@@ -1,3 +1,5 @@
+Register-PSRepository -Name PSGallery -SourceLocation https://www.powershellgallery.com/api/v2 -InstallationPolicy Trusted
+
 # Set variables for the SQL server, databases to backup, backup path, retention period, and log path
 $SqlServer = "LAPTOP-5GHNVJD9\SQLEXPRESS"
 $BackupPath = "D:\Backups"
