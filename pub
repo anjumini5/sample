@@ -1,0 +1,64 @@
+-- Create a publication database snapshot or backup
+USE master;
+CREATE DATABASE PublicationDB_snapshot ON 
+   ( NAME = PublicationDB, FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\PublicationDB_snapshot.ss' )
+   AS SNAPSHOT OF PublicationDB;
+
+-- Create the publication
+USE PublicationDB;
+EXEC sp_addpublication @publication = N'Pub_DB',
+     @description = N'Transactional publication of PublicationDB database',
+     @sync_method = N'concurrent',
+     @retention = 0,
+     @allow_push = N'true',
+     @allow_pull = N'true',
+     @allow_anonymous = N'false',
+     @enabled_for_internet = N'false',
+     @snapshot_in_defaultfolder = N'true',
+     @compress_snapshot = N'false',
+     @ftp_port = 21,
+     @ftp_login = N'anonymous',
+     @allow_subscription_copy = N'false',
+     @add_to_active_directory = N'false',
+     @repl_freq = N'continuous',
+     @status = N'active',
+     @independent_agent = N'true',
+     @immediate_sync = N'false',
+     @allow_sync_tran = N'false',
+     @autogen_sync_procs = N'false',
+     @allow_queued_tran = N'false',
+     @allow_dts = N'false',
+     @replicate_ddl = 0,
+     @allow_initialize_from_backup = N'false',
+     @enabled_for_p2p = N'false',
+     @enabled_for_het_sub = N'false';
+
+-- Add articles to the publication
+EXEC sp_addarticle @publication = N'Pub_DB',
+     @article = N'Table1',
+     @source_owner = N'dbo',
+     @source_object = N'Table1',
+     @type = N'logbased',
+     @description = N'article for Table1',
+     @creation_script = null,
+     @pre_creation_cmd = N'drop',
+     @schema_option = 0x000000000803509F,
+     @identityrangemanagementoption = N'manual',
+     @destination_table = N'Table1',
+     @destination_owner = N'dbo';
+
+-- Set publication properties
+EXEC sp_changepublication @publication = N'Pub_DB',
+     @property = N'allow_anonymous',
+     @value = 'false';
+EXEC sp_changepublication @publication = N'Pub_DB',
+     @property = N'snapshot_in_defaultfolder',
+     @value = 'true';
+EXEC sp_changepublication @publication = N'Pub_DB',
+     @property = N'allow_subscription_copy',
+     @value = 'false';
+EXEC sp_changepublication @publication = N'Pub_DB',
+     @property = N'retain_days',
+     @value = 14;
+EXEC sp_changepublication_snapshot @publication = N'Pub_DB',
+     @frequency_type
